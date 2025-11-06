@@ -1,0 +1,122 @@
+.right-header-container {
+    position: relative;
+    height: 72px;
+    border-bottom: 1px solid rgba(181, 101, 216, 0.1);
+    background: #FFF5F7;
+}
+
+.right-header,
+.search-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 16px;
+    background: #FFF5F7;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+/* Normal Header */
+.right-header {
+    justify-content: space-between;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.search-mode .right-header {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+}
+
+.logo-container {
+    height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+.header-logo {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+}
+
+.header-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Search Header */
+.search-header {
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    gap: 8px;
+}
+
+.search-mode .search-header {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.search-input-wrapper {
+    flex: 1;
+    margin: 0 8px;
+}
+
+.search-input {
+    width: 95%;
+    height: 40px;
+    border: 2px solid rgba(181, 101, 216, 0.2);
+    background: white;
+    border-radius: 20px;
+    padding: 0 16px;
+    font-size: 14px;
+    color: #6B2C91;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.search-input::placeholder {
+    color: rgba(107, 44, 145, 0.5);
+}
+
+.search-input:focus {
+    background: white;
+    border-color: #B565D8;
+}
+
+/* Common Button Styles */
+.icon-button {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.icon-button:hover {
+    background-color: rgba(181, 101, 216, 0.1);
+}
+
+.icon-button .material-icons {
+    font-size: 24px;
+    color: #B565D8;
+}
+
+.icon-button:hover .material-icons {
+    transform: scale(1.1);
+    color: #6B2C91;
+}

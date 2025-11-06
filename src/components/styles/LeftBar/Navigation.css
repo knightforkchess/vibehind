@@ -1,0 +1,182 @@
+/* Modern Dating App Navigation - Override */
+.nav-buttons {
+    flex: 1;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nav-button {
+    background: white !important;
+    border: none !important;
+    color: #6B2C91 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    padding: 14px 16px !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    font-family: 'Manrope', sans-serif !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    border-radius: 250px !important;
+    box-shadow: 0 2px 8px rgba(107, 44, 145, 0.08) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+}
+
+.nav-button::before {
+    content: '' !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    height: 100% !important;
+    width: 4px !important;
+    background: #B565D8 !important;
+    transform: scaleY(0) !important;
+    transition: transform 0.3s ease !important;
+}
+
+.nav-button:hover {
+    transform: translateX(4px) !important;
+    box-shadow: 0 4px 12px rgba(181, 101, 216, 0.2) !important;
+}
+
+.nav-button:hover::before {
+    transform: scaleY(1) !important;
+}
+
+.nav-button.active {
+    background: linear-gradient(135deg, #B565D8 0%, #9B4FC9 100%) !important;
+    color: white !important;
+    box-shadow: 0 4px 16px rgba(181, 101, 216, 0.4) !important;
+}
+
+.nav-button.active::before {
+    transform: scaleY(1) !important;
+    background: #5DADE2 !important;
+}
+
+/* Bottom Section - Modern Dating Theme */
+.bottom-section {
+    padding: 16px !important;
+    background: rgba(255, 255, 255, 0.5) !important;
+    border-top: 1px solid rgba(181, 101, 216, 0.1) !important;
+    margin-top: auto !important;
+}
+
+.bottom-links {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    position: relative !important;
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+.bottom-link {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 10px 12px !important;
+    color: #6B2C91 !important;
+    text-decoration: none !important;
+    font-family: 'Manrope', sans-serif !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+    border-radius: 8px !important;
+}
+
+.bottom-link:hover {
+    background: rgba(181, 101, 216, 0.1) !important;
+    transform: none !important;
+}
+
+.bottom-link .material-icons {
+    font-size: 20px !important;
+    color: #6B2C91 !important;
+}
+
+/* Premium Card */
+.premium-card {
+    width: 100% !important;
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%) !important;
+    border: none !important;
+    border-radius: 16px !important;
+    padding: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3) !important;
+    margin-bottom: 12px !important;
+}
+
+.premium-card:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(255, 165, 0, 0.4) !important;
+}
+
+/* Toggle Switch Styles */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 24px;
+    margin-left: 10px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.3);
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .4s;
+}
+
+.slider.round {
+    border-radius: 24px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #2CF1FF;
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+@media (max-width: 768px) {
+    .nav-buttons {
+        padding-top: 80px !important;
+    }
+}

@@ -1,0 +1,136 @@
+/* Modern Dating App Header */
+.left-header {
+    padding: 20px 16px;
+    background: white;
+    border-radius: 0 0 20px 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 12px rgba(107, 44, 145, 0.1);
+}
+
+/* Profile Section */
+.profile-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.profile-avatar {
+    position: relative;
+    width: 60px;
+    height: 60px;
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #B565D8;
+    box-shadow: 0 2px 8px rgba(181, 101, 216, 0.3);
+}
+
+.verified-icon {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    background: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.verified-icon .material-icons {
+    color: #5DADE2;
+    font-size: 18px;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-name {
+    margin: 0 0 6px 0;
+    font-family: 'Momo Trust Display', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #6B2C91;
+}
+
+.edit-profile-btn {
+    background: rgba(181, 101, 216, 0.1);
+    border: none;
+    color: #B565D8;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+}
+
+.edit-profile-btn:hover {
+    background: rgba(181, 101, 216, 0.2);
+}
+
+.edit-profile-btn .material-icons {
+    font-size: 16px;
+}
+
+/* Match Stats */
+.match-stats {
+    display: flex;
+    gap: 8px;
+}
+
+.stat-card {
+    flex: 1;
+    background: linear-gradient(135deg, #FFF0F5 0%, #FFE5EC 100%);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid rgba(181, 101, 216, 0.1);
+}
+
+.stat-icon {
+    width: 36px;
+    height: 36px;
+    background: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #B565D8;
+    font-size: 20px;
+    box-shadow: 0 2px 4px rgba(181, 101, 216, 0.1);
+}
+
+.stat-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-number {
+    font-family: 'Momo Trust Display', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: #6B2C91;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    color: #B565D8;
+    font-weight: 600;
+    margin-top: 2px;
+}

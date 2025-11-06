@@ -1,0 +1,123 @@
+/* New Post Navigation */
+.new-post-nav {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 99;
+    opacity: 0;
+    transform: translateY(20px) scale(0.8);
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.new-post-nav.open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: all;
+}
+
+.nav-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background: white;
+    border: 2px solid rgba(181, 101, 216, 0.3);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(181, 101, 216, 0.2);
+    min-width: 160px;
+    animation: slideInRight 0.3s ease forwards;
+}
+
+.nav-option:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.nav-option:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.nav-option:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.nav-option:hover {
+    background: linear-gradient(135deg, #B565D8, #9B4FC9);
+    border-color: #B565D8;
+    transform: translateX(-5px);
+    box-shadow: 0 6px 16px rgba(181, 101, 216, 0.4);
+}
+
+.nav-option:hover .material-icons,
+.nav-option:hover .option-text {
+    color: white;
+}
+
+.nav-option .material-icons {
+    font-size: 24px;
+    color: #B565D8;
+    transition: color 0.3s ease;
+}
+
+.option-text {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #6B2C91;
+    transition: color 0.3s ease;
+}
+
+/* Backdrop */
+.nav-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 98;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Animations */
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Mobile */
+@media screen and (max-width: 800px) {
+    .new-post-nav {
+        bottom: 80px;
+        right: 20px;
+    }
+
+    .nav-option {
+        min-width: 140px;
+        padding: 12px 16px;
+    }
+
+    .nav-option .material-icons {
+        font-size: 22px;
+    }
+
+    .option-text {
+        font-size: 0.9rem;
+    }
+}
