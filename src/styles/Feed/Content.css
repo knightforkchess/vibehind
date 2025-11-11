@@ -1,0 +1,364 @@
+/* Tinder-Style Container */
+.tinder-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #FFF5F7;
+    overflow: hidden;
+}
+
+/* Tinder Card */
+.tinder-card {
+    position: absolute;
+    width: 90%;
+    max-width: 450px;
+    height: 85vh;
+    max-height: 700px;
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(107, 44, 145, 0.15);
+    overflow: hidden;
+    cursor: grab;
+    user-select: none;
+    will-change: transform;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 3px solid rgba(255, 209, 220, 0.3);
+}
+
+.tinder-card.dragging {
+    cursor: grabbing;
+    transition: none;
+}
+
+.tinder-card * {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Swipe Indicators */
+.swipe-indicator {
+    position: absolute;
+    top: 50px;
+    padding: 16px 28px;
+    border-radius: 12px;
+    border: 4px solid;
+    font-family: 'Momo Trust Display', sans-serif;
+    font-size: 2rem;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 100;
+    animation: pulse-indicator 0.5s ease-in-out infinite;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.swipe-indicator.like {
+    right: 30px;
+    color: #48C9B0;
+    border-color: #48C9B0;
+    background: rgba(72, 201, 176, 0.1);
+    transform: rotate(20deg);
+}
+
+.swipe-indicator.nope {
+    left: 30px;
+    color: #FF6B9D;
+    border-color: #FF6B9D;
+    background: rgba(255, 107, 157, 0.1);
+    transform: rotate(-20deg);
+}
+
+.swipe-indicator .material-icons {
+    font-size: 2.5rem;
+}
+
+@keyframes pulse-indicator {
+    0%, 100% { transform: scale(1) rotate(20deg); }
+    50% { transform: scale(1.05) rotate(20deg); }
+}
+
+.swipe-indicator.nope {
+    animation: pulse-indicator-nope 0.5s ease-in-out infinite;
+}
+
+@keyframes pulse-indicator-nope {
+    0%, 100% { transform: scale(1) rotate(-20deg); }
+    50% { transform: scale(1.05) rotate(-20deg); }
+}
+
+/* Card Image */
+.card-image {
+    width: 100%;
+    height: 60%;
+    overflow: hidden;
+    position: relative;
+}
+
+.card-image .online-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(72, 201, 176, 0.95);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: 'Manrope', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 8px rgba(72, 201, 176, 0.3);
+    z-index: 10;
+}
+
+.card-image .online-badge::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.card-image::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.3));
+    pointer-events: none;
+}
+
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    user-select: none;
+    -webkit-user-drag: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    pointer-events: none;
+}
+
+/* Card Info */
+.card-info {
+    padding: 24px;
+    height: 40%;
+    overflow-y: auto;
+    background: white;
+}
+
+.card-info::-webkit-scrollbar {
+    width: 4px;
+}
+
+.card-info::-webkit-scrollbar-thumb {
+    background: rgba(181, 101, 216, 0.3);
+    border-radius: 2px;
+}
+
+.profile-header {
+    margin-bottom: 16px;
+}
+
+.profile-header h2 {
+    font-family: 'Momo Trust Display', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: #6B2C91;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.5px;
+}
+
+.location {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #9B4FC9;
+    font-size: 14px;
+    font-family: 'Manrope', sans-serif;
+    margin: 0;
+}
+
+.location .material-icons {
+    font-size: 18px;
+}
+
+.bio {
+    color: #6B2C91;
+    font-size: 15px;
+    line-height: 1.6;
+    font-family: 'Manrope', sans-serif;
+    margin: 0 0 16px 0;
+    opacity: 0.9;
+}
+
+.interests {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.interest-tag {
+    background: linear-gradient(135deg, #FFD1DC 0%, #FFE5EC 100%);
+    color: #6B2C91;
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Manrope', sans-serif;
+    border: 1px solid rgba(181, 101, 216, 0.2);
+    transition: all 0.2s ease;
+}
+
+.interest-tag:hover {
+    background: linear-gradient(135deg, #B565D8 0%, #9B4FC9 100%);
+    color: white;
+    border-color: transparent;
+}
+
+/* Action Buttons */
+.action-buttons {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 24px;
+    z-index: 10;
+}
+
+.action-btn {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.action-btn .material-icons {
+    font-size: 32px;
+}
+
+.action-btn.nope {
+    background: linear-gradient(135deg, #FF6B9D 0%, #FF8FB3 100%);
+    color: white;
+}
+
+.action-btn.nope:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 24px rgba(255, 107, 157, 0.4);
+}
+
+.action-btn.like {
+    background: linear-gradient(135deg, #48C9B0 0%, #5DADE2 100%);
+    color: white;
+}
+
+.action-btn.like:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 24px rgba(72, 201, 176, 0.4);
+}
+
+.action-btn:active {
+    transform: scale(0.95);
+}
+
+/* Profile Counter */
+.profile-counter {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    color: #6B2C91;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(107, 44, 145, 0.15);
+    z-index: 10;
+    border: 2px solid rgba(255, 209, 220, 0.5);
+}
+
+/* Loading State */
+.loading-text {
+    color: #6B2C91;
+    font-size: 18px;
+    font-weight: 600;
+    font-family: 'Manrope', sans-serif;
+    text-align: center;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .tinder-card {
+        width: 95%;
+        height: 90vh;
+        max-height: none;
+    }
+
+    .card-image {
+        height: 65%;
+    }
+
+    .card-info {
+        height: 35%;
+        padding: 20px;
+    }
+
+    .profile-header h2 {
+        font-size: 24px;
+    }
+
+    .action-buttons {
+        bottom: 30px;
+        gap: 20px;
+    }
+
+    .action-btn {
+        width: 56px;
+        height: 56px;
+    }
+
+    .action-btn .material-icons {
+        font-size: 28px;
+    }
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.tinder-card {
+    animation: fadeIn 0.3s ease-out;
+}

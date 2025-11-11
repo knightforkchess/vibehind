@@ -2,9 +2,24 @@ import { useState, useEffect, useRef } from 'react'
 import '../styles/RightBar.css'
 import RightHeader from './RightBar/Header'
 import Details from './RightBar/Details'
+import OtherLives from './RightBar/OtherLives'
+import LiveDetails from './RightBar/LiveDetails'
+import MatchList from './RightBar/MatchList'
+import CloseList from './RightBar/CloseList'
 import Share from './RightBar/Share'
+import ProfileDetails from './RightBar/ProfileDetails'
 
-export default function RightBar({ activePost }) {
+export default function RightBar({ 
+    activePost, 
+    isLiveMode, 
+    isMatchesMode, 
+    isCloseMode,
+    isProfileMode,
+    selectedLive, 
+    selectedMatch, 
+    onLiveSelect, 
+    onMatchSelect 
+}) {
     const [isExpanded, setIsExpanded] = useState(false);
     const [isListening, setIsListening] = useState(false);
     const [transcript, setTranscript] = useState('');
@@ -123,7 +138,43 @@ export default function RightBar({ activePost }) {
                     searchInputRef={searchInputRef}
                     onShareClick={() => setShowShare(true)}
                 />
-                <Details activePost={activePost} />
+                {/* Live Mode Content */}
+                {isLiveMode && (
+                    <>
+                        <div style={{ display: selectedLive ? 'none' : 'block' }}>
+                            <OtherLives onLiveSelect={onLiveSelect} />
+                        </div>
+                        {selectedLive && (
+                            <LiveDetails 
+                                live={selectedLive} 
+                                onClose={() => onLiveSelect?.(null)}
+                            />
+                        )}
+                    </>
+                )}
+                
+                {/* Other Modes */}
+                {!isLiveMode && (
+                    <>
+                        {selectedLive ? (
+                            <LiveDetails 
+                                live={selectedLive} 
+                                onClose={() => onLiveSelect?.(null)}
+                            />
+                        ) : isMatchesMode ? (
+                            <MatchList 
+                                onMatchSelect={onMatchSelect}
+                                selectedMatch={selectedMatch}
+                            />
+                        ) : isCloseMode ? (
+                            <CloseList onUserClick={() => {}} />
+                        ) : isProfileMode ? (
+                            <ProfileDetails />
+                        ) : (
+                            <Details activePost={activePost} />
+                        )}
+                    </>
+                )}
                 
                 {isListening && (
                     <div className="voice-recognition-overlay">

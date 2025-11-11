@@ -1,0 +1,358 @@
+.profile-details-container {
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+    background: #fff;
+}
+
+.profile-details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.profile-details-header h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #333;
+}
+
+.settings-icon {
+    color: #666;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.settings-icon:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #ff4081;
+}
+
+.completion-card {
+    background: linear-gradient(135deg, #ff4081, #ff6b9d);
+    padding: 20px;
+    border-radius: 16px;
+    color: white;
+    margin-bottom: 24px;
+}
+
+.completion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.completion-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.completion-percentage {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.completion-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.completion-progress {
+    height: 100%;
+    background: white;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.completion-tip {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.profile-sections {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.section-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: none;
+    border: 2px solid #eee;
+    border-radius: 12px;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.section-btn.active {
+    border-color: #ff4081;
+    color: #ff4081;
+    background: rgba(255, 64, 129, 0.05);
+}
+
+.section-btn:hover {
+    border-color: #ff4081;
+    transform: translateY(-2px);
+}
+
+.section-btn .material-icons {
+    font-size: 24px;
+}
+
+.section-content {
+    background: #f8f8f8;
+    border-radius: 16px;
+    padding: 20px;
+}
+
+/* Edit Profile Section */
+.edit-profile-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.edit-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.edit-field label {
+    font-size: 14px;
+    color: #666;
+}
+
+.field-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.field-input input,
+.field-input textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #eee;
+    border-radius: 12px;
+    font-size: 14px;
+    color: #333;
+    background: white;
+    transition: all 0.2s ease;
+}
+
+.field-input textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.field-input input:focus,
+.field-input textarea:focus {
+    border-color: #ff4081;
+    outline: none;
+}
+
+.field-input .material-icons {
+    position: absolute;
+    right: 12px;
+    color: #999;
+    cursor: pointer;
+}
+
+.interests-editor {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px;
+    background: white;
+    border: 2px solid #eee;
+    border-radius: 12px;
+}
+
+.interest-tag {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 64, 129, 0.1);
+    color: #ff4081;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+.remove-icon {
+    font-size: 16px !important;
+    cursor: pointer;
+}
+
+.add-interest-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: 2px dashed #ccc;
+    padding: 6px 12px;
+    border-radius: 20px;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.add-interest-btn:hover {
+    border-color: #ff4081;
+    color: #ff4081;
+}
+
+.save-profile-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #ff4081;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.save-profile-btn:hover {
+    background: #ff2d71;
+    transform: translateY(-2px);
+}
+
+/* Privacy Section */
+.privacy-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.privacy-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: white;
+    border-radius: 12px;
+}
+
+.option-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.option-info .material-icons {
+    color: #ff4081;
+}
+
+.option-text h4 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.option-text p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.privacy-option select {
+    padding: 8px 12px;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    color: #333;
+    background: white;
+    cursor: pointer;
+}
+
+/* Notifications Section */
+.notifications-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.notification-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: white;
+    border-radius: 12px;
+}
+
+/* Switch Toggle */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #ff4081;
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+.loading-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: #666;
+    font-size: 16px;
+}

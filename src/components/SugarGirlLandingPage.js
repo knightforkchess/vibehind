@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactFullpage from '@fullpage/react-fullpage';
 import { gsap } from 'gsap';
 import '../styles/SugarGirlLandingPage.css';
+import LoginForm from './LoginForm';
+import VideoPopup from './VideoPopup';
 
 export default function SugarGirlLandingPage({ onEnter }) {
     const cursorRef = useRef(null);
@@ -9,6 +11,8 @@ export default function SugarGirlLandingPage({ onEnter }) {
     // const [scrollProgress, setScrollProgress] = useState(0);
     const [isMobile, setIsMobile] = useState(false);
     const [currentStory, setCurrentStory] = useState(0);
+    const [showLoginForm, setShowLoginForm] = useState(false);
+    const [showVideoPopup, setShowVideoPopup] = useState(false);
 
     useEffect(() => {
         // Check if mobile
@@ -124,6 +128,16 @@ export default function SugarGirlLandingPage({ onEnter }) {
 
     return (
         <>
+            <LoginForm 
+                isOpen={showLoginForm} 
+                onClose={() => setShowLoginForm(false)}
+                onLogin={onEnter}
+            />
+            <VideoPopup 
+                isOpen={showVideoPopup} 
+                onClose={() => setShowVideoPopup(false)}
+                videoUrl="https://youtu.be/jdGUq6kBi14?si=YZvKJTngRZEHEsMq"
+            />
             <div ref={cursorRef} className="custom-cursor candy-cursor" />
             
             {/* Story Progress Indicators for Mobile */}
@@ -217,10 +231,10 @@ export default function SugarGirlLandingPage({ onEnter }) {
                                         
                                         <div className="animate-item">
                                             <div className="hero-buttons">
-                                                <button className="btn-candy-primary" onClick={onEnter}>
+                                                <button className="btn-candy-primary" onClick={() => setShowLoginForm(true)}>
                                                     💖 Hemen Başla
                                                 </button>
-                                                <button className="btn-candy-secondary" onClick={onEnter}>
+                                                <button className="btn-candy-secondary" onClick={() => setShowVideoPopup(true)}>
                                                     ✨ Keşfet
                                                 </button>
                                             </div>
@@ -459,7 +473,7 @@ export default function SugarGirlLandingPage({ onEnter }) {
                                         </div>
                                         
                                         <div className="animate-item">
-                                            <button className="btn-candy-large" onClick={onEnter}>
+                                            <button className="btn-candy-large" onClick={() => setShowLoginForm(true)}>
                                                 💖 Ücretsiz Başla
                                             </button>
                                         </div>

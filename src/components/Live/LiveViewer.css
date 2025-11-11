@@ -1,0 +1,285 @@
+/* Live Viewer Container */
+.live-viewer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    background: #000;
+    position: relative;
+}
+
+/* Live Video Container */
+.live-video-container {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.live-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Live Video Overlay */
+.live-video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+.live-video-overlay > * {
+    pointer-events: auto;
+}
+
+/* Live Badge */
+.live-overlay-top {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    right: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 20;
+}
+
+.live-badge {
+    background: rgba(255, 0, 0, 0.9);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.4);
+    animation: pulse-badge 2s infinite;
+}
+
+.live-badge .material-icons {
+    font-size: 16px;
+    animation: blink 1.5s infinite;
+}
+
+@keyframes pulse-badge {
+    0%, 100% {
+        box-shadow: 0 4px 12px rgba(255, 0, 0, 0.4);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(255, 0, 0, 0.6);
+    }
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Live Stats */
+.live-stats {
+    display: flex;
+    gap: 12px;
+}
+
+.stat-item {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    padding: 8px 16px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: white;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.stat-item .material-icons {
+    font-size: 18px;
+}
+
+/* Stream Info */
+.stream-info {
+    position: absolute;
+    bottom: 80px;
+    left: 24px;
+    right: 24px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    padding: 24px;
+    color: white;
+    z-index: 15;
+}
+
+.host-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.host-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
+}
+
+.stream-info h2 {
+    margin: 0 0 4px 0;
+    font-family: 'Momo Trust Display', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.host-name {
+    margin: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.category-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background: rgba(181, 101, 216, 0.9);
+    border-radius: 16px;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+/* Live Controls */
+.live-overlay-controls {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 16px;
+    z-index: 30;
+}
+
+.control-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.9);
+    color: #6B2C91;
+}
+
+.control-btn .material-icons {
+    font-size: 28px;
+}
+
+.control-btn.close-btn {
+    background: rgba(255, 107, 157, 0.9);
+    color: white;
+}
+
+.control-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Live Actions */
+.live-actions {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    z-index: 30;
+}
+
+.like-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 60px;
+}
+
+.like-btn .material-icons {
+    font-size: 32px;
+}
+
+.like-btn.liked {
+    background: rgba(255, 107, 157, 0.9);
+    animation: heartBeat 0.3s ease;
+}
+
+.like-btn:hover {
+    transform: scale(1.1);
+}
+
+@keyframes heartBeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+.like-count {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .live-overlay-top {
+        top: 16px;
+        left: 16px;
+        right: 16px;
+    }
+
+    .live-badge {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+
+    .stat-item {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+
+    .stream-info {
+        bottom: 100px;
+        left: 16px;
+        right: 16px;
+        padding: 16px;
+    }
+
+    .stream-info h2 {
+        font-size: 1.2rem;
+    }
+
+    .control-btn {
+        width: 48px;
+        height: 48px;
+    }
+
+    .control-btn .material-icons {
+        font-size: 24px;
+    }
+}

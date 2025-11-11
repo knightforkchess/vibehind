@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './styles/Details.css';
 import Comments from './Comments';
 import Likes from './Likes';
 import SavedBookmarks from './SavedBookmarks';
 import Toast from '../Toast';
+import socketService from '../../services/socket';
 
 export default function Details({ activePost }) {
     const [isLiked, setIsLiked] = useState(false);
@@ -13,6 +14,34 @@ export default function Details({ activePost }) {
     const [showBookmarks, setShowBookmarks] = useState(false);
     const [isBookmarked, setIsBookmarked] = useState(false);
     const [showToast, setShowToast] = useState(false);
+    const [userOnlineStatus, setUserOnlineStatus] = useState(activePost?.online || false);
+
+    useEffect(() => {
+        if (activePost) {
+            setUserOnlineStatus(activePost.online || false);
+        }
+    }, [activePost]);
+
+    useEffect(() => {
+        // Listen for online/offline status changes
+        let unsubscribe = () => {};
+        
+        try {
+            unsubscribe = socketService.onOnlineStatusChange((userId, isOnline) => {
+                if (activePost && activePost._id === userId) {
+                    setUserOnlineStatus(isOnline);
+                }
+            });
+        } catch (error) {
+            console.error('Failed to subscribe to online status:', error);
+        }
+
+        return () => {
+            if (unsubscribe) {
+                unsubscribe();
+            }
+        };
+    }, [activePost]);
 
     const handleLike = () => {
         setIsLiked(!isLiked);
@@ -42,8 +71,8 @@ export default function Details({ activePost }) {
                         )}
                     </h1>
                     <div className="profile-meta">
-                        <span className="profile-age">{activePost.age}</span>
-                        {activePost.online && (
+                        {activePost.age && <span className="profile-age">{activePost.age}</span>}
+                        {userOnlineStatus && (
                             <span className="online-indicator">
                                 <span className="online-dot"></span>
                                 Çevrimiçi
@@ -54,11 +83,13 @@ export default function Details({ activePost }) {
             </div>
 
             {/* Location & Distance */}
-            <div className="profile-location">
-                <span className="material-icons">location_on</span>
-                <span>{activePost.location}</span>
-                <span className="distance">{activePost.distance}</span>
-            </div>
+            {activePost.location && (
+                <div className="profile-location">
+                    <span className="material-icons">location_on</span>
+                    <span>{activePost.location}</span>
+                    {activePost.distance && <span className="distance">{activePost.distance}</span>}
+                </div>
+            )}
 
             {/* Bio Section */}
             <div className="profile-bio">

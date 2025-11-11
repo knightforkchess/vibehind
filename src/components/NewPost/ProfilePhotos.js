@@ -1,24 +1,22 @@
 import React, { useState, useRef } from 'react';
 import '../../styles/NewPost/ProfilePhotos.css';
+import userService from '../../services/user';
 
 export default function ProfilePhotos({ onClose }) {
-    const [photos, setPhotos] = useState([
-        { id: 1, url: 'https://picsum.photos/400/500?random=1', isPrimary: true },
-        { id: 2, url: 'https://picsum.photos/400/500?random=2', isPrimary: false },
-        { id: 3, url: 'https://picsum.photos/400/500?random=3', isPrimary: false },
-        { id: 4, url: 'https://picsum.photos/400/500?random=4', isPrimary: false },
-    ]);
+    const [photos, setPhotos] = useState([]);
     const [draggedIndex, setDraggedIndex] = useState(null);
     const fileInputRef = useRef(null);
+    const [isSaving, setIsSaving] = useState(false);
 
     const handleAddPhoto = (e) => {
         const files = Array.from(e.target.files);
         const newPhotos = files.map((file, index) => ({
             id: Date.now() + index,
             url: URL.createObjectURL(file),
+            file,
             isPrimary: false
         }));
-        setPhotos([...photos, ...newPhotos]);
+        setPhotos(prev => [...prev, ...newPhotos]);
     };
 
     const handleRemovePhoto = (id) => {
@@ -44,7 +42,6 @@ export default function ProfilePhotos({ onClose }) {
         const draggedPhoto = newPhotos[draggedIndex];
         newPhotos.splice(draggedIndex, 1);
         newPhotos.splice(index, 0, draggedPhoto);
-        
         setPhotos(newPhotos);
         setDraggedIndex(index);
     };
@@ -53,10 +50,19 @@ export default function ProfilePhotos({ onClose }) {
         setDraggedIndex(null);
     };
 
-    const handleSave = () => {
-        console.log('Profil fotoğrafları kaydedildi:', photos);
-        // Backend'e gönder
-        onClose();
+    const handleSave = async () => {
+        setIsSaving(true);
+        try {
+            const primary = photos.find(p => p.isPrimary) || photos[0];
+            const profileFile = primary?.file || null;
+            await userService.updateProfile({ profileFile });
+            onClose();
+        } catch (err) {
+            console.error('Failed to upload profile photos', err);
+            alert('Fotoğraf yüklenirken hata oluştu.');
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     return (
@@ -98,7 +104,7 @@ export default function ProfilePhotos({ onClose }) {
                                 onDragEnd={handleDragEnd}
                             >
                                 <img src={photo.url} alt={`Profile ${index + 1}`} />
-                                
+
                                 {photo.isPrimary && (
                                     <div className="primary-badge">
                                         <span className="material-icons">star</span>
@@ -157,9 +163,9 @@ export default function ProfilePhotos({ onClose }) {
                             <span className="material-icons">close</span>
                             İptal
                         </button>
-                        <button className="save-btn" onClick={handleSave}>
+                        <button className="save-btn" onClick={handleSave} disabled={isSaving}>
                             <span className="material-icons">check</span>
-                            Kaydet
+                            {isSaving ? 'Kaydediliyor...' : 'Kaydet'}
                         </button>
                     </div>
                 </div>

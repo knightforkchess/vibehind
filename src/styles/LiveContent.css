@@ -1,0 +1,26 @@
+/* Live Content */
+.live-content {
+    height: 100vh;
+    overflow: hidden;
+    background: #000;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.live-content-loading {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #FFF0F5 0%, #FFE5EC 100%);
+}
+
+.loading-spinner {
+    font-size: 1.2rem;
+    color: #6B2C91;
+    font-weight: 600;
+    font-family: 'Manrope', sans-serif;
+}
+

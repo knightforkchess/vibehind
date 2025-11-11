@@ -1,0 +1,143 @@
+.map-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #f0f2f5;
+    border-radius: 16px;
+}
+
+.map {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #f5f7fa 0%, #e8ebf2 100%);
+    cursor: grab;
+    transition: transform 0.1s ease-out;
+    user-select: none;
+    touch-action: none;
+}
+
+.map.dragging {
+    cursor: grabbing;
+    transition: none;
+}
+
+/* Map Grid Pattern */
+.map::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: center center;
+}
+
+.map-marker {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+}
+
+.marker-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 36px;
+    height: 36px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 2;
+    transition: transform 0.2s ease;
+}
+
+.marker-icon:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.marker-icon .material-icons {
+    font-size: 20px;
+    color: #6B2C91;
+}
+
+/* Hidden Profile Marker Styles */
+.marker-hidden-profile .marker-icon {
+    background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+}
+
+.marker-hidden-profile .marker-icon .material-icons {
+    color: white;
+}
+
+/* User Location Marker Styles */
+.marker-user-location .marker-icon {
+    background: linear-gradient(45deg, #6B2C91, #9c27b0);
+    border: 2px solid white;
+}
+
+.marker-user-location .marker-icon .material-icons {
+    color: white;
+    font-size: 22px;
+}
+
+/* Ripple Animation */
+.marker-ripple {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 107, 107, 0.4);
+    border-radius: 50%;
+    animation: ripple 2s infinite;
+}
+
+.user-ripple {
+    background: rgba(107, 44, 145, 0.4);
+}
+
+@keyframes ripple {
+    0% {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Prevent animations while dragging for better performance */
+.no-animation .marker-ripple {
+    animation: none;
+}
+
+/* Hover effects */
+.map-marker:hover .marker-icon {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .marker-icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .marker-icon .material-icons {
+        font-size: 18px;
+    }
+}

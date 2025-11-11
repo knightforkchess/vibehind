@@ -76,22 +76,41 @@ export default function Filters({ isOpen, onClose }) {
                         <div className="age-display">
                             {ageRange[0]} - {ageRange[1]} yaş
                         </div>
-                        <div className="range-inputs">
+                        <div className="dual-range-slider">
+                            <div className="slider-track">
+                                <div 
+                                    className="slider-range" 
+                                    style={{
+                                        left: `${((ageRange[0] - 18) / (80 - 18)) * 100}%`,
+                                        right: `${100 - ((ageRange[1] - 18) / (80 - 18)) * 100}%`
+                                    }}
+                                />
+                            </div>
                             <input
                                 type="range"
                                 min="18"
                                 max="80"
                                 value={ageRange[0]}
-                                onChange={(e) => setAgeRange([parseInt(e.target.value), ageRange[1]])}
-                                className="range-slider"
+                                onChange={(e) => {
+                                    const value = parseInt(e.target.value);
+                                    if (value < ageRange[1]) {
+                                        setAgeRange([value, ageRange[1]]);
+                                    }
+                                }}
+                                className="range-slider-input range-min"
                             />
                             <input
                                 type="range"
                                 min="18"
                                 max="80"
                                 value={ageRange[1]}
-                                onChange={(e) => setAgeRange([ageRange[0], parseInt(e.target.value)])}
-                                className="range-slider"
+                                onChange={(e) => {
+                                    const value = parseInt(e.target.value);
+                                    if (value > ageRange[0]) {
+                                        setAgeRange([ageRange[0], value]);
+                                    }
+                                }}
+                                className="range-slider-input range-max"
                             />
                         </div>
                     </div>

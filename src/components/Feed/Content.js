@@ -1,267 +1,306 @@
 // src/components/Feed/Content.js
 import React, { useEffect, useState, useRef } from 'react';
-import '../styles/Feed/Content.css';
-import SendGift from './SendGift';
+import '../../styles/Feed/Content.css';
+import api from '../../services/api';
+import socketService from '../../services/socket';
 
-export default function Content({ post, onSwipe, onLike, onDislike, isActive }) {
-    const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
+export default function Content({ onProfileChange }) {
+    const [profiles, setProfiles] = useState([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
     const [swipeDirection, setSwipeDirection] = useState(null);
-    const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
     const [isDragging, setIsDragging] = useState(false);
-    const [showVideoIntro, setShowVideoIntro] = useState(false);
-    const [showGiftModal, setShowGiftModal] = useState(false);
-    const [selectedGift, setSelectedGift] = useState(null);
     const cardRef = useRef(null);
-    const startPos = useRef({ x: 0, y: 0 });
+    const startPosRef = useRef({ x: 0, y: 0 });
 
-    // Reset media index when post changes
     useEffect(() => {
-        setCurrentMediaIndex(0);
-        setDragOffset({ x: 0, y: 0 });
-        setSwipeDirection(null);
-    }, [post.id]);
+        fetchProfiles();
 
+        // Listen for online/offline status changes
+        let unsubscribe = () => {};
+        
+        try {
+            unsubscribe = socketService.onOnlineStatusChange((userId, isOnline) => {
+                setProfiles(prevProfiles => 
+                    prevProfiles.map(profile => 
+                        profile._id === userId 
+                            ? { ...profile, online: isOnline }
+                            : profile
+                    )
+                );
+            });
+        } catch (error) {
+            console.error('Failed to subscribe to online status:', error);
+        }
 
-    const handlePrevMedia = () => {
-        if (currentMediaIndex > 0) {
-            setCurrentMediaIndex(currentMediaIndex - 1);
+        return () => {
+            if (unsubscribe) {
+                unsubscribe();
+            }
+        };
+    }, []);
+
+    const fetchProfiles = async () => {
+        try {
+            const response = await api.get('/users/feed/profiles');
+            const profilesWithDefaults = response.data.map(profile => ({
+                ...profile,
+                username: profile.username || 'Kullanıcı',
+                profilePicture: profile.profilePicture || '/logo192.png',
+                bio: profile.bio || 'Bu kullanıcı henüz bir biyografi eklemedi.',
+                interests: profile.interests || [],
+                age: profile.age || null,
+                location: profile.location?.coordinates ? 
+                    `${profile.location.coordinates[1].toFixed(2)}, ${profile.location.coordinates[0].toFixed(2)}` : 
+                    'Konum belirtilmemiş',
+                distance: profile.distance || null,
+                verified: profile.verified || false,
+                online: profile.isOnline || false,
+                likes: profile.likesCount || 0,
+                comments: 0
+            }));
+            setProfiles(profilesWithDefaults);
+            setCurrentIndex(0);
+            // İlk profili parent'a bildir
+            if (profilesWithDefaults.length > 0 && onProfileChange) {
+                onProfileChange(profilesWithDefaults[0]);
+            }
+        } catch (error) {
+            console.error('Failed to fetch profiles:', error);
         }
     };
 
-    const handleNextMedia = () => {
-        if (currentMediaIndex < post.media.length - 1) {
-            setCurrentMediaIndex(currentMediaIndex + 1);
-        }
-    };
-
-    const handleDotClick = (index) => {
-        setCurrentMediaIndex(index);
-    };
-
-    // Card swipe handlers
-    const handleDragStart = (e) => {
-        const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
-        const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
-        startPos.current = { x: clientX, y: clientY };
+    const handleTouchStart = (e) => {
+        const touch = e.touches[0];
+        startPosRef.current = { x: touch.clientX, y: touch.clientY };
         setIsDragging(true);
     };
 
-    const handleDragMove = (e) => {
+    const handleTouchMove = (e) => {
         if (!isDragging) return;
-        
-        const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
-        const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
-        
-        const deltaX = clientX - startPos.current.x;
-        const deltaY = clientY - startPos.current.y;
-        
-        setDragOffset({ x: deltaX, y: deltaY });
-        
-        // Show swipe direction indicator
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - startPosRef.current.x;
+        const deltaY = touch.clientY - startPosRef.current.y;
+
+        if (cardRef.current) {
+            cardRef.current.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${deltaX * 0.1}deg)`;
+        }
+
         if (Math.abs(deltaX) > 50) {
-            setSwipeDirection(deltaX > 0 ? 'right' : 'left');
-        } else if (deltaY < -50) {
-            setSwipeDirection('up');
+            setSwipeDirection(deltaX > 0 ? 'like' : 'nope');
         } else {
             setSwipeDirection(null);
         }
     };
 
-    const handleDragEnd = () => {
+    const handleTouchEnd = (e) => {
         setIsDragging(false);
-        
-        const threshold = 100;
-        
-        // Swipe right = Like
-        if (dragOffset.x > threshold) {
-            animateSwipeOut('right');
-            setTimeout(() => onLike?.(), 300);
+        const touch = e.changedTouches[0];
+        const deltaX = touch.clientX - startPosRef.current.x;
+
+        if (Math.abs(deltaX) > 100) {
+            // Swipe completed
+            if (deltaX > 0) {
+                handleLike();
+            } else {
+                handleNope();
+            }
+        } else {
+            // Reset position
+            if (cardRef.current) {
+                cardRef.current.style.transform = '';
+            }
         }
-        // Swipe left = Dislike
-        else if (dragOffset.x < -threshold) {
-            animateSwipeOut('left');
-            setTimeout(() => onDislike?.(), 300);
+        setSwipeDirection(null);
+    };
+
+    const handleMouseDown = (e) => {
+        startPosRef.current = { x: e.clientX, y: e.clientY };
+        setIsDragging(true);
+    };
+
+    const handleMouseMove = (e) => {
+        if (!isDragging) return;
+        const deltaX = e.clientX - startPosRef.current.x;
+        const deltaY = e.clientY - startPosRef.current.y;
+
+        if (cardRef.current) {
+            cardRef.current.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${deltaX * 0.1}deg)`;
         }
-        // Swipe up = Next profile
-        else if (dragOffset.y < -threshold) {
-            animateSwipeOut('up');
-            setTimeout(() => onSwipe?.('up'), 300);
-        }
-        // Return to center
-        else {
-            setDragOffset({ x: 0, y: 0 });
+
+        if (Math.abs(deltaX) > 50) {
+            setSwipeDirection(deltaX > 0 ? 'like' : 'nope');
+        } else {
             setSwipeDirection(null);
         }
     };
 
-    const animateSwipeOut = (direction) => {
-        const multiplier = direction === 'left' ? -1 : direction === 'right' ? 1 : 0;
-        setDragOffset({
-            x: multiplier * window.innerWidth,
-            y: direction === 'up' ? -window.innerHeight : 0
-        });
+    const handleMouseUp = (e) => {
+        setIsDragging(false);
+        const deltaX = e.clientX - startPosRef.current.x;
+
+        if (Math.abs(deltaX) > 100) {
+            if (deltaX > 0) {
+                handleLike();
+            } else {
+                handleNope();
+            }
+        } else {
+            if (cardRef.current) {
+                cardRef.current.style.transform = '';
+            }
+        }
+        setSwipeDirection(null);
     };
 
-    const rotation = dragOffset.x / 20;
-    const opacity = 1 - Math.abs(dragOffset.x) / 300;
+    const handleLike = async () => {
+        const currentProfile = profiles[currentIndex];
+        console.log('Liked:', currentProfile);
+        
+        try {
+            const response = await api.post('/matches/swipe', {
+                targetUserId: currentProfile._id,
+                type: 'like'
+            });
+            
+            if (response.data.matched) {
+                // Eşleşme oldu! Bildirim göster
+                console.log('🎉 Eşleşme oldu!', response.data.match);
+                // TODO: Eşleşme bildirimi göster
+            }
+        } catch (error) {
+            console.error('Like error:', error);
+        }
+        
+        nextProfile();
+    };
+
+    const handleNope = async () => {
+        const currentProfile = profiles[currentIndex];
+        console.log('Noped:', currentProfile);
+        
+        try {
+            await api.post('/matches/swipe', {
+                targetUserId: currentProfile._id,
+                type: 'nope'
+            });
+        } catch (error) {
+            console.error('Nope error:', error);
+        }
+        
+        nextProfile();
+    };
+
+    const nextProfile = () => {
+        if (currentIndex < profiles.length - 1) {
+            const newIndex = currentIndex + 1;
+            setCurrentIndex(newIndex);
+            if (cardRef.current) {
+                cardRef.current.style.transform = '';
+            }
+            // Yeni profili parent'a bildir
+            if (onProfileChange && profiles[newIndex]) {
+                onProfileChange(profiles[newIndex]);
+            }
+        } else {
+            // Reload profiles when we reach the end
+            fetchProfiles();
+        }
+    };
+
+    if (profiles.length === 0) {
+        return (
+            <div className="tinder-container">
+                <p className="loading-text">Profiller yükleniyor...</p>
+            </div>
+        );
+    }
+
+    const currentProfile = profiles[currentIndex];
 
     return (
-        <div 
-            ref={cardRef}
-            className={`tinder-card ${isDragging ? 'dragging' : ''}`}
-            style={{
-                transform: `translate(${dragOffset.x}px, ${dragOffset.y}px) rotate(${rotation}deg)`,
-                opacity: opacity,
-                transition: isDragging ? 'none' : 'all 0.3s ease-out'
-            }}
-            onMouseDown={handleDragStart}
-            onMouseMove={handleDragMove}
-            onMouseUp={handleDragEnd}
-            onMouseLeave={handleDragEnd}
-            onTouchStart={handleDragStart}
-            onTouchMove={handleDragMove}
-            onTouchEnd={handleDragEnd}
-        >
-            {/* Swipe Direction Indicators */}
-            {swipeDirection === 'right' && (
-                <div className="swipe-indicator like">
-                    <span className="material-icons">favorite</span>
-                    <span>BEĞENDİM</span>
-                </div>
-            )}
-            {swipeDirection === 'left' && (
-                <div className="swipe-indicator nope">
-                    <span className="material-icons">close</span>
-                    <span>HAYIR</span>
-                </div>
-            )}
-            {swipeDirection === 'up' && (
-                <div className="swipe-indicator next">
-                    <span className="material-icons">arrow_upward</span>
-                    <span>SONRAKİ</span>
-                </div>
-            )}
-
-            {/* Media Gallery */}
-            <div className="card-media">
-                <div 
-                    className="media-slider"
-                    style={{ transform: `translateX(-${currentMediaIndex * 100}%)` }}
-                >
-                    {post.media.map((item, index) => (
-                        <div key={item.id} className="media-slide">
-                            {item.type === 'video' ? (
-                                <video>
-                                    <source src={item.url} type="video/mp4" />
-                                </video>
-                            ) : (
-                                <img src={item.url} alt={`${post.username} ${index + 1}`} />
-                            )}
-                        </div>
-                    ))}
-                </div>
-
-                {/* Media Progress Bars */}
-                {post.media.length > 1 && (
-                    <div className="media-progress-bars">
-                        {post.media.map((_, index) => (
-                            <div 
-                                key={index} 
-                                className={`progress-bar ${index === currentMediaIndex ? 'active' : index < currentMediaIndex ? 'completed' : ''}`}
-                            />
-                        ))}
-                    </div>
-                )}
-
-                {/* Media Navigation Zones */}
-                {post.media.length > 1 && (
-                    <>
-                        <div className="nav-zone left" onClick={handlePrevMedia} />
-                        <div className="nav-zone right" onClick={handleNextMedia} />
-                    </>
-                )}
-            </div>
-
-            {/* Profile Info Overlay */}
-            <div className="card-info">
-                <div className="profile-quick-info">
-                    <h2>
-                        {post.username}, {post.age}
-                        {post.verified && <span className="material-icons verified">verified</span>}
-                    </h2>
-                    <p className="location">
-                        <span className="material-icons">location_on</span>
-                        {post.location} • {post.distance}
-                    </p>
-                    <p className="bio-preview">{post.bio}</p>
-                </div>
-
-                {/* Special Features */}
-                <div className="special-actions">
-                    <button 
-                        className="special-btn video-intro"
-                        onClick={() => setShowVideoIntro(true)}
-                    >
-                        <span className="material-icons">videocam</span>
-                        <span>Video Tanıtım</span>
-                    </button>
-                    <button 
-                        className="special-btn send-gift"
-                        onClick={() => setShowGiftModal(true)}
-                    >
-                        <span className="material-icons">redeem</span>
-                        <span>Hediye Gönder</span>
-                    </button>
-                </div>
-            </div>
-
-            {/* Video Intro Modal */}
-        {showVideoIntro && (
-            <div className="video-intro-modal" onClick={() => setShowVideoIntro(false)}>
-                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                    <button className="close-modal" onClick={() => setShowVideoIntro(false)}>
-                        <span className="material-icons">close</span>
-                    </button>
-                    <h3>📹 {post.username} Kendini Tanıtıyor</h3>
-                    <div className="video-placeholder">
-                        <span className="material-icons">play_circle</span>
-                        <p>15 saniyelik video tanıtım</p>
-                    </div>
-                </div>
-            </div>
-        )}
-
-        {/* Gift Modal */}
-        {showGiftModal && !selectedGift && (
-            <div className="gift-modal" onClick={() => setShowGiftModal(false)}>
-                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                    <button className="close-modal" onClick={() => setShowGiftModal(false)}>
-                        <span className="material-icons">close</span>
-                    </button>
-                    <h3>🎁 Hediye Gönder</h3>
-                    <div className="gift-options">
-                        <button className="gift-item" onClick={() => setSelectedGift({ name: 'Gül', icon: '🌹', price: 50 })}>🌹 Gül</button>
-                        <button className="gift-item" onClick={() => setSelectedGift({ name: 'Çiçek Buketi', icon: '💐', price: 150 })}>💐 Çiçek Buketi</button>
-                        <button className="gift-item" onClick={() => setSelectedGift({ name: 'Çikolata', icon: '🍫', price: 75 })}>🍫 Çikolata</button>
-                        <button className="gift-item" onClick={() => setSelectedGift({ name: 'Kahve', icon: '☕', price: 60 })}>☕ Kahve</button>
-                        <button className="gift-item" onClick={() => setSelectedGift({ name: 'Elmas', icon: '💎', price: 500 })}>💎 Elmas</button>
-                        <button className="gift-item" onClick={() => setSelectedGift({ name: 'Taç', icon: '👑', price: 1000 })}>👑 Taç</button>
-                    </div>
-                </div>
-            </div>
-        )}
-
-        {/* Send Gift Payment */}
-        {selectedGift && (
-            <SendGift 
-                gift={selectedGift}
-                recipient={post.username}
-                onClose={() => {
-                    setSelectedGift(null);
-                    setShowGiftModal(false);
+        <div className="tinder-container">
+            <div
+                ref={cardRef}
+                className={`tinder-card ${isDragging ? 'dragging' : ''}`}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={() => {
+                    if (isDragging) {
+                        setIsDragging(false);
+                        if (cardRef.current) {
+                            cardRef.current.style.transform = '';
+                        }
+                        setSwipeDirection(null);
+                    }
                 }}
-            />
-        )}
-    </div>
-);
+            >
+                {swipeDirection && (
+                    <div className={`swipe-indicator ${swipeDirection}`}>
+                        {swipeDirection === 'like' && (
+                            <>
+                                <span className="material-icons">favorite</span>
+                                <span>LIKE</span>
+                            </>
+                        )}
+                        {swipeDirection === 'nope' && (
+                            <>
+                                <span className="material-icons">close</span>
+                                <span>NOPE</span>
+                            </>
+                        )}
+                    </div>
+                )}
+
+                <div className="card-image">
+                    {currentProfile.online && (
+                        <div className="online-badge">
+                            Çevrimiçi
+                        </div>
+                    )}
+                    <img
+                        src={currentProfile.profilePicture || '/logo192.png'}
+                        alt={currentProfile.username}
+                        onError={(e) => { e.target.src = '/logo192.png'; }}
+                    />
+                </div>
+
+                <div className="card-info">
+                    <div className="profile-header">
+                        <h2>{currentProfile.username}</h2>
+                        {currentProfile.location?.coordinates && currentProfile.location.coordinates[0] !== 0 && (
+                            <p className="location">
+                                <span className="material-icons">location_on</span>
+                                {currentProfile.location.coordinates[1].toFixed(2)}, {currentProfile.location.coordinates[0].toFixed(2)}
+                            </p>
+                        )}
+                    </div>
+                    <p className="bio">{currentProfile.bio || 'Bu kullanıcı henüz bir biyografi eklemedi.'}</p>
+                    {currentProfile.interests && currentProfile.interests.length > 0 && (
+                        <div className="interests">
+                            {currentProfile.interests.map((interest, index) => (
+                                <span key={index} className="interest-tag">{interest}</span>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            <div className="action-buttons">
+                <button className="action-btn nope" onClick={handleNope}>
+                    <span className="material-icons">close</span>
+                </button>
+                <button className="action-btn like" onClick={handleLike}>
+                    <span className="material-icons">favorite</span>
+                </button>
+            </div>
+
+            <div className="profile-counter">
+                {currentIndex + 1} / {profiles.length}
+            </div>
+        </div>
+    );
 }
